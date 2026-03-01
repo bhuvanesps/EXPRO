@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAPE — Events</title>
+    <meta name="description"
+        content="EXPRO events — Technical and non-technical competitions at AU-MIT's national-level technical symposium.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Montserrat', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            red: '#ff0000',
+                            'red-dark': '#cc0000',
+                            orange: '#ff914d',
+                            'orange-light': '#ffb380',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #050505;
+            overflow-x: hidden;
+        }
+
+        /* ── Gradient text ── */
+        .gradient-text {
+            background: linear-gradient(135deg, #ff0000 0%, #ff914d 50%, #ff0000 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes textShimmer {
+
+            0%,
+            100% {
+                background-position: 0% center;
+            }
+
+            50% {
+                background-position: 200% center;
+            }
+        }
+
+        /* ── Scroll animations ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Glow line ── */
+        .glow-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff0000, #ff914d, transparent);
+            opacity: 0.6;
+        }
+
+        /* ── Glass ── */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(16px);
+        }
+
+        /* ── Navbar ── */
+        .nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            position: relative;
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 24px rgba(255, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-primary:hover::after {
+            opacity: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(255, 145, 77, 0.5);
+            color: #ff914d;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 145, 77, 0.1);
+            border-color: #ff914d;
+            transform: translateY(-2px);
+        }
+
+        /* ── Event card ── */
+        .event-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+        }
+
+        .event-card:hover {
+            border-color: rgba(255, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.07);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(255, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        /* ── Meta pill ── */
+        .meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .meta-pill svg {
+            width: 14px;
+            height: 14px;
+            color: #ff914d;
+            flex-shrink: 0;
+        }
+
+        /* ── Prize badge (next to title) ── */
+        .prize-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: linear-gradient(135deg, rgba(255, 180, 0, 0.22), rgba(255, 120, 0, 0.18));
+            border: 1px solid rgba(255, 180, 0, 0.45);
+            border-radius: 9999px;
+            padding: 0.3rem 1rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: #ffd060;
+            white-space: nowrap;
+            box-shadow: 0 0 14px rgba(255, 180, 0, 0.18);
+        }
+
+        .prize-badge svg {
+            width: 18px;
+            height: 18px;
+            color: #ffd060;
+            flex-shrink: 0;
+        }
+
+        /* ── Fee pill (distinct amber color) ── */
+        .fee-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ffb347;
+            background: rgba(255, 145, 0, 0.12);
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 145, 0, 0.35);
+        }
+
+        .fee-pill svg {
+            width: 14px;
+            height: 14px;
+            color: #ffb347;
+            flex-shrink: 0;
+        }
+
+        /* ── Footer link hover ── */
+        .footer-link {
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 0;
+            height: 1px;
+            background: #ff914d;
+            transition: width 0.3s ease;
+        }
+
+        .footer-link:hover::after {
+            width: 100%;
+        }
+
+        /* ── Rules modal ── */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            z-index: 60;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay.active {
+            display: flex;
+        }
+
+        .rules-box {
+            background: rgba(15, 15, 15, 0.97);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 550px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .rules-box h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #ff914d;
+            margin-bottom: 1rem;
+        }
+
+        .rules-box h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #ff914d;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .rules-box ul {
+            list-style: disc;
+            padding-left: 1.25rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+            line-height: 1.8;
+        }
+
+        .rules-box p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+            line-height: 1.8;
+            margin-bottom: 0.75rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ff0000;
+        }
+    </style>
+</head>
+
+<body class="text-white antialiased">
+
+    <!-- ═══════════ NAVBAR ═══════════ -->
+    <nav id="navbar"
+        class="fixed top-0 left-0 w-full z-50 transition-transform duration-300 bg-black/70 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="images/mit_logo.png" alt="MIT Logo" class="h-9 lg:h-12 w-auto bg-white p-1 rounded-md">
+                    <span
+                        class="hidden sm:block font-display font-bold text-sm lg:text-base tracking-wide gradient-text">TAPE</span>
+                </a>
+                <ul class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
+                    <li><a href="index.html" class="text-white/70 hover:text-white transition-colors">Home</a></li>
+                    <li><a href="events.html"
+                            class="text-brand-orange hover:text-brand-orange transition-colors">Events</a></li>
+                    <li><a href="workshop.html" class="text-white/70 hover:text-white transition-colors">Workshops</a>
+                    </li>
+                    <li><a href="contacts.html" class="text-white/70 hover:text-white transition-colors">Contact</a>
+                    </li>
+                </ul>
+                <button id="menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-white/5 transition-colors"
+                    aria-label="Toggle menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden border-t border-white/5">
+            <div class="px-6 py-6 space-y-4 bg-black/90 backdrop-blur-xl">
+                <a href="index.html"
+                    class="block text-white/70 hover:text-white font-medium py-2 border-b border-white/5">Home</a>
+                <a href="events.html"
+                    class="block text-brand-orange font-medium py-2 border-b border-white/5">Events</a>
+                <a href="workshop.html"
+                    class="block text-white/70 hover:text-white font-medium py-2 border-b border-white/5">Workshops</a>
+                <a href="contacts.html" class="block text-white/70 hover:text-white font-medium py-2">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="pt-32 pb-16 lg:pt-40 lg:pb-24 relative">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <p class="reveal text-xs font-semibold tracking-[0.3em] uppercase text-brand-orange mb-4">EXPRO 2026</p>
+            <h1 class="reveal font-display font-900 text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-5">Our Events
+            </h1>
+            <p class="reveal text-white/40 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
+                Showcase your skills in cutting-edge robotics, programming, debate, and quizzes.
+            </p>
+        </div>
+    </section>
+
+    <!-- ═══════════ TECHNICAL EVENTS ═══════════ -->
+    <section class="pb-24">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8">
+            <div class="glow-line w-full mb-16"></div>
+
+            <div class="reveal text-center mb-14">
+                <p class="text-xs font-semibold tracking-[0.3em] uppercase text-brand-orange mb-3">Compete & Conquer</p>
+                <h2 class="font-display font-800 text-3xl sm:text-4xl tracking-tight">Technical Events</h2>
+            </div>
+
+            <div class="space-y-8">
+
+                <!-- CAD VIBE-A-THON -->
+                <div class="reveal event-card rounded-2xl overflow-hidden">
+                    <div class="grid lg:grid-cols-3 gap-0">
+                        <div class="bg-black/60 overflow-hidden" style="min-height:220px">
+                            <img src="images/11_20260213_091630_0010.png" class="w-full h-full object-cover"
+                                alt="CAD Vibe-a-thon" style="min-height:220px">
+                        </div>
+                        <div class="lg:col-span-2 p-8 lg:p-10 flex flex-col justify-center">
+                            <div class="flex flex-wrap items-center gap-3 mb-3">
+                                <h3 class="font-display font-800 text-2xl lg:text-3xl">CAD Vibe-a-thon</h3>
+                                <span class="prize-badge">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                    ₹10,000
+                                </span>
+                            </div>
+                            <p class="text-white/45 text-sm leading-relaxed mb-5">
+                                A leading Automobile OEM is seeking an AI-driven solution to convert large volumes of 2D
+                                engineering drawings into accurate 3D models. The dataset includes mechanical
+                                components, sheet metal parts, and electrical circuit drawings.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-5">
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    March 7, 2026
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    10:00 AM – 12:00 PM
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    PT Dept, MIT
+                                </span>
+                                <span class="fee-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    ₹1,000 Entry Fee
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Team of 3
+                                </span>
+                            </div>
+                            <div class="text-xs text-white/35 mb-6 space-y-1">
+                                <p>📞 Sai Anup — <a href="tel:+919962488557" class="text-brand-red hover:underline">+91
+                                        9962488557</a></p>
+                                <p>📞 Logendra Saravanan — <a href="tel:+919363174055"
+                                        class="text-brand-red hover:underline">+91 9363174055</a></p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="showRules('cad-vibe-details')"
+                                    class="btn-outline font-semibold px-6 py-2.5 rounded-xl text-sm">More
+                                    Details</button>
+                                <a href="https://forms.gle/i1UohQqAhjz8XwEr9"
+                                    class="btn-primary text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Register
+                                    now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROBO SUMO -->
+                <div class="reveal event-card rounded-2xl overflow-hidden">
+                    <div class="grid lg:grid-cols-3 gap-0">
+                        <div class="bg-black/60 overflow-hidden" style="min-height:220px">
+                            <img src="images/robosumo.png" class="w-full h-full object-cover" alt="Robo Sumo"
+                                style="min-height:220px">
+                        </div>
+                        <div class="lg:col-span-2 p-8 lg:p-10 flex flex-col justify-center">
+                            <div class="flex flex-wrap items-center gap-3 mb-3">
+                                <h3 class="font-display font-800 text-2xl lg:text-3xl">Robo Sumo</h3>
+                                <span class="prize-badge">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                    ₹5,000
+                                </span>
+                            </div>
+                            <p class="text-white/45 text-sm leading-relaxed mb-5">
+                                A competitive robotics sport where autonomous robots attempt to push each other out of a
+                                circular ring, mimicking the rules and strategies of traditional Japanese sumo
+                                wrestling.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-5">
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    March 7, 2026
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    10:00 AM – 12:00 PM
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Hanger 1, MIT
+                                </span>
+                                <span class="fee-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    ₹500 Entry Fee
+                                </span>
+                            </div>
+                            <div class="text-xs text-white/35 mb-6 space-y-1">
+                                <p>📞 Harish — <a href="tel:+916380227644" class="text-brand-red hover:underline">+91
+                                        6380227644</a></p>
+                                <p>📞 Mukhil Kanna — <a href="tel:+918072681810"
+                                        class="text-brand-red hover:underline">+91 8072681810</a></p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="showRules('robo-sumo-rules')"
+                                    class="btn-outline font-semibold px-6 py-2.5 rounded-xl text-sm">View Rules</button>
+                                <a href="https://forms.gle/78Bif2Ub2nTApxAD8"
+                                    class="btn-primary text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Register
+                                    Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROBO SOCCER -->
+                <div class="reveal event-card rounded-2xl overflow-hidden">
+                    <div class="grid lg:grid-cols-3 gap-0">
+                        <div class="bg-black/60 overflow-hidden" style="min-height:220px">
+                            <img src="images/robosoccer.png" class="w-full h-full object-cover" alt="Robo Soccer"
+                                style="min-height:220px">
+                        </div>
+                        <div class="lg:col-span-2 p-8 lg:p-10 flex flex-col justify-center">
+                            <div class="flex flex-wrap items-center gap-3 mb-3">
+                                <h3 class="font-display font-800 text-2xl lg:text-3xl">Robo Soccer</h3>
+                                <span class="prize-badge">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                    ₹5,000
+                                </span>
+                            </div>
+                            <p class="text-white/45 text-sm leading-relaxed mb-5">
+                                Enter the Arena of Futuristic Soccer supremacy! Command your remote-controlled robot to
+                                dominate the specially designed robotic soccer battleground. Score big, strategize
+                                smart, and outmaneuver your opponents.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-5">
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    March 7, 2026
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    10:00 AM – 12:00 PM
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Hanger 2, MIT
+                                </span>
+                                <span class="fee-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    ₹500 Entry Fee
+                                </span>
+                            </div>
+                            <div class="text-xs text-white/35 mb-6 space-y-1">
+                                <p>📞 Afzhar — <a href="tel:+917358566079" class="text-brand-red hover:underline">+91
+                                        7358566079</a></p>
+                                <p>📞 Navin Prakash— <a href="tel:+918610186796"
+                                        class="text-brand-red hover:underline">+91
+                                        8610186796</a></p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="showRules('robo-soccer-rules')"
+                                    class="btn-outline font-semibold px-6 py-2.5 rounded-xl text-sm">View Rules</button>
+                                <a href="https://forms.gle/78Bif2Ub2nTApxAD8"
+                                    class="btn-primary text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Register
+                                    Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAC BOT -->
+                <div class="reveal event-card rounded-2xl overflow-hidden">
+                    <div class="grid lg:grid-cols-3 gap-0">
+                        <div class="bg-black/60 overflow-hidden" style="min-height:220px">
+                            <img src="images/pacbot.png" class="w-full h-full object-cover" alt="Pac Bot"
+                                style="min-height:220px">
+                        </div>
+                        <div class="lg:col-span-2 p-8 lg:p-10 flex flex-col justify-center">
+                            <div class="flex flex-wrap items-center gap-3 mb-3">
+                                <h3 class="font-display font-800 text-2xl lg:text-3xl">Pac Bot</h3>
+                                <span class="prize-badge">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                    ₹5,000
+                                </span>
+                            </div>
+                            <p class="text-white/45 text-sm leading-relaxed mb-5">
+                                A thrilling maze chase competition where two robots, Pac and Ghost, compete against each
+                                other. The Pac bot must navigate the maze to reach the destination, while the Ghost bot
+                                tries to catch it.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-5">
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    March 7, 2026
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    10:00 AM – 12:00 PM
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Connect Point, MIT
+                                </span>
+                                <span class="fee-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    ₹500 Entry Fee
+                                </span>
+                            </div>
+                            <div class="text-xs text-white/35 mb-6 space-y-1">
+                                <p>📞 Vaibov Jayan — <a href="tel:+918807658820"
+                                        class="text-brand-red hover:underline">+91 8807658820</a></p>
+                                <p>📞 Sanjith — <a href="tel:+916381831509" class="text-brand-red hover:underline">+91
+                                        6381831509</a></p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="showRules('pac-bot-rules')"
+                                    class="btn-outline font-semibold px-6 py-2.5 rounded-xl text-sm">View Rules</button>
+                                <a href="https://forms.gle/78Bif2Ub2nTApxAD8"
+                                    class="btn-primary text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Register
+                                    Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROBO RUSH -->
+                <div class="reveal event-card rounded-2xl overflow-hidden">
+                    <div class="grid lg:grid-cols-3 gap-0">
+                        <div class="bg-black/60 overflow-hidden" style="min-height:220px">
+                            <img src="images/roborush.png" class="w-full h-full object-cover" alt="Robo Rush"
+                                style="min-height:220px">
+                        </div>
+                        <div class="lg:col-span-2 p-8 lg:p-10 flex flex-col justify-center">
+                            <div class="flex flex-wrap items-center gap-3 mb-3">
+                                <h3 class="font-display font-800 text-2xl lg:text-3xl">Robo Rush</h3>
+                                <span class="prize-badge">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                    ₹5,000
+                                </span>
+                            </div>
+                            <p class="text-white/45 text-sm leading-relaxed mb-5">
+                                A thrilling robotics event where teams create rugged robots built to tackle challenging
+                                landscapes. From rough surfaces to steep inclines, the bots must demonstrate stability,
+                                strength, and control.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-5">
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    March 7, 2026
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    10:00 AM – 12:00 PM
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Near Old PT Building, MIT
+                                </span>
+                                <span class="fee-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    ₹500 Entry Fee
+                                </span>
+                            </div>
+                            <div class="text-xs text-white/35 mb-6 space-y-1">
+                                <p>📞 Naveen — <a href="tel:+917395973495" class="text-brand-red hover:underline">+91
+                                        7395973495</a></p>
+                                <p>📞 Thriloknath — <a href="tel:+918248159505"
+                                        class="text-brand-red hover:underline">+91 8248159505</a></p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="showRules('robo-rush-rules')"
+                                    class="btn-outline font-semibold px-6 py-2.5 rounded-xl text-sm">View Rules</button>
+                                <a href="https://forms.gle/78Bif2Ub2nTApxAD8"
+                                    class="btn-primary text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Register
+                                    Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ NON-TECHNICAL EVENTS ═══════════ -->
+    <section class="pb-24">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8">
+            <div class="glow-line w-full mb-16"></div>
+
+            <div class="reveal text-center mb-14">
+                <p class="text-xs font-semibold tracking-[0.3em] uppercase text-brand-orange mb-3">Beyond the Lab</p>
+                <h2 class="font-display font-800 text-3xl sm:text-4xl tracking-tight">Non-Technical Events</h2>
+            </div>
+
+            <div class="space-y-8">
+
+                <!-- ADZAP -->
+                <div class="reveal event-card rounded-2xl overflow-hidden">
+                    <div class="grid lg:grid-cols-3 gap-0">
+                        <div class="bg-black/60 overflow-hidden" style="min-height:220px">
+                            <img src="images/adzap.png" class="w-full h-full object-cover" alt="Adzap"
+                                style="min-height:220px">
+                        </div>
+                        <div class="lg:col-span-2 p-8 lg:p-10 flex flex-col justify-center">
+                            <div class="flex flex-wrap items-center gap-3 mb-3">
+                                <h3 class="font-display font-800 text-2xl lg:text-3xl">Adzap</h3>
+                                <span class="prize-badge">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                    ₹1,500
+                                </span>
+                            </div>
+                            <p class="text-white/45 text-sm leading-relaxed mb-5">
+                                A fun and creative marketing event where participants showcase their advertising skills
+                                by promoting given products or surprise items on the spot. Teams must create engaging,
+                                innovative ads using acting, storytelling, or humor.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-5">
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    March 7, 2026
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    11:00 AM – 12:30 PM
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Sensor Lab, MIT
+                                </span>
+                                <span class="fee-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    ₹150 Entry Fee
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Team of 2–4
+                                </span>
+                            </div>
+                            <div class="text-xs text-white/35 mb-6 space-y-1">
+                                <p>📞 Madhu — <a href="tel:+919488169941" class="text-brand-red hover:underline">+91
+                                        9488169941</a></p>
+                                <p>📞 Dhivya — <a href="tel:+919080682474" class="text-brand-red hover:underline">+91
+                                        9080682474</a></p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <a href="https://forms.gle/78Bif2Ub2nTApxAD8"
+                                    class="btn-primary text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Register
+                                    Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SHIPWREK -->
+                <div class="reveal event-card rounded-2xl overflow-hidden">
+                    <div class="grid lg:grid-cols-3 gap-0">
+                        <div class="bg-black/60 overflow-hidden" style="min-height:220px">
+                            <img src="images/ship.png" class="w-full h-full object-cover" alt="Shipwrek"
+                                style="min-height:220px">
+                        </div>
+                        <div class="lg:col-span-2 p-8 lg:p-10 flex flex-col justify-center">
+                            <div class="flex flex-wrap items-center gap-3 mb-3">
+                                <h3 class="font-display font-800 text-2xl lg:text-3xl">Shipwrek</h3>
+                                <span class="prize-badge">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                    ₹1,500
+                                </span>
+                            </div>
+                            <p class="text-white/45 text-sm leading-relaxed mb-5">
+                                A strategy and survival-based event where participants are given unique roles,
+                                scenarios, or items and must justify why they deserve to "survive" while others are
+                                eliminated. It tests logical thinking, persuasion skills, and creativity.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-5">
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    March 7, 2026
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    11:00 AM – 12:30 PM
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Embedded Lab, MIT
+                                </span>
+                                <span class="fee-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    ₹150 Entry Fee
+                                </span>
+                            </div>
+                            <div class="text-xs text-white/35 mb-6 space-y-1">
+                                <p>📞 Ashwin — <a href="tel:+916379809372" class="text-brand-red hover:underline">+91
+                                        6379809372</a></p>
+                                <p>📞 Parthiban — <a href="tel:+917200040050" class="text-brand-red hover:underline">+91
+                                        7200040050</a></p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <a href="https://forms.gle/78Bif2Ub2nTApxAD8"
+                                    class="btn-primary text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Register
+                                    Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUIZATRON -->
+                <div class="reveal event-card rounded-2xl overflow-hidden">
+                    <div class="grid lg:grid-cols-3 gap-0">
+                        <div class="bg-black/60 overflow-hidden" style="min-height:220px">
+                            <img src="images/quizatron.png" class="w-full h-full object-cover" alt="Quizatron"
+                                style="min-height:220px">
+                        </div>
+                        <div class="lg:col-span-2 p-8 lg:p-10 flex flex-col justify-center">
+                            <div class="flex flex-wrap items-center gap-3 mb-3">
+                                <h3 class="font-display font-800 text-2xl lg:text-3xl">Quizatron</h3>
+                                <span class="prize-badge">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                    ₹1,500
+                                </span>
+                            </div>
+                            <p class="text-white/45 text-sm leading-relaxed mb-5">
+                                A thrilling trivia competition covering a wide range of topics, from history and science
+                                to pop culture, testing participants' knowledge and quick recall.
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-5">
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    March 7, 2026
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    9:30 AM – 11:00 AM
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Fluid Lab, PT Dept, MIT
+                                </span>
+                                <span class="fee-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    ₹150 Entry Fee
+                                </span>
+                                <span class="meta-pill">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Solo or Team of 2
+                                </span>
+                            </div>
+                            <div class="text-xs text-white/35 mb-6 space-y-1">
+                                <p>📞 Sugi — <a href="tel:+919791437563" class="text-brand-red hover:underline">+91
+                                        9791437563</a></p>
+                                <p>📞 Madhavan — <a href="tel:+919489346169" class="text-brand-red hover:underline">+91
+                                        9489346169</a></p>
+                            </div>
+                            <div class="flex flex-wrap gap-3">
+                                <a href="https://forms.gle/78Bif2Ub2nTApxAD8"
+                                    class="btn-primary text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Register
+                                    Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ RULES OVERLAYS ═══════════ -->
+
+    <!-- CAD VIBE-A-THON DETAILS -->
+    <div id="cad-vibe-details" class="overlay">
+        <div class="rules-box">
+            <button class="close-btn" onclick="hideRules('cad-vibe-details')">✕</button>
+            <h4>CAD Vibe-a-thon Details</h4>
+
+            <h5>Description</h5>
+            <p>A leading automobile OEM is seeking an AI-driven solution to convert large volumes of 2D engineering
+                drawings (PDF format) into accurate 3D models and dimensional visualization outputs. The dataset
+                includes mechanical components, sheet metal parts, and electrical circuit drawings, where manual
+                conversion currently requires significant time and effort.</p>
+
+            <h5>Hackathon Challenge</h5>
+            <p>Develop an AI-based system capable of dynamically converting 2D PDF engineering drawings into precise and
+                dimensionally accurate 3D models.</p>
+
+            <h5>Technical Requirements</h5>
+            <ul>
+                <li>AI-based 2D to 3D conversion approach</li>
+                <li>Compatibility with Siemens NX workflow</li>
+                <li>Multi-format export capability: PRT, GLTF/GLB, OBJ, FBX, STL, PLY</li>
+                <li>Participants are allowed to use any AI tools, frameworks, or models</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="pac-bot-rules" class="overlay">
+        <div class="rules-box">
+            <button class="close-btn" onclick="hideRules('pac-bot-rules')">✕</button>
+            <h4>Pac Bot Rules</h4>
+            <ul>
+                <li>Teams: 1-3 members</li>
+                <li>Max size: 30 cm × 30 cm × 30 cm</li>
+                <li>Max weight: 5 kg</li>
+                <li>Roles: One bot is Ghost, the other is Pac</li>
+                <li>Objective: Pac bot must reach destination without being caught</li>
+                <li>Arena: Maze environment</li>
+                <li>Ghost wins if it catches Pac; Pac wins if it reaches destination</li>
+                <li>Registration: Online & on-spot available</li>
+
+
+            </ul>
+        </div>
+    </div>
+
+    <div id="robo-rush-rules" class="overlay">
+        <div class="rules-box">
+            <button class="close-btn" onclick="hideRules('robo-rush-rules')">✕</button>
+            <h4>Robo Rush Rules</h4>
+            <ul>
+                <li>Max size: 30 cm × 30 cm × 30 cm</li>
+                <li>Max weight: 5 kg</li>
+                <li>Task: Traverse the given path</li>
+                <li>Teams: 1-3 members</li>
+                <li>Event Format: One-time round, no trial allowed</li>
+                <li>Registration: Online & on-spot available</li>
+                <li>Mandatory: Participants must bring college ID card</li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div id="robo-soccer-rules" class="overlay">
+        <div class="rules-box">
+            <button class="close-btn" onclick="hideRules('robo-soccer-rules')">✕</button>
+            <h4>Robo Soccer Rules</h4>
+            <ul>
+                <li>Max size: 30 cm × 30 cm × 30 cm</li>
+                <li>Max weight: 5 kg</li>
+                <li>Control: Wired, wireless, or autonomous</li>
+                <li>Power Supply: Self-powered, onboard, max 12V DC</li>
+                <li>Only one participant controls the robot</li>
+                <li>No player exchange during match</li>
+                <li>Teams: Up to 3 members</li>
+                <li>Ball Handling: Push or hit only (no grabbing/holding)</li>
+                <li>Judge's decision is final</li>
+                <li>Online & on-spot registration available</li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div id="robo-sumo-rules" class="overlay">
+        <div class="rules-box">
+            <button class="close-btn" onclick="hideRules('robo-sumo-rules')">✕</button>
+            <h4>Robo Sumo Rules</h4>
+            <ul>
+                <li>Max size: 30 cm × 30 cm × 30 cm</li>
+                <li>Max weight: 5 kg</li>
+                <li>Teams: 1-3 members, one robot per team</li>
+                <li>Goal: Push opponent out of ring or immobilize them</li>
+                <li>Match duration: 3 minutes</li>
+                <li>Robots must stay in arena</li>
+                <li>Control: Remote-controlled (wired or wireless)</li>
+                <li>Win by staying in ring or pushing opponent out</li>
+                <li>Safety: No sharp parts or dangerous materials</li>
+                <li>Online & on-spot registration available</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer class="border-t border-white/5 bg-black/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
+                <div>
+                    <h3 class="font-display font-bold text-lg mb-3 gradient-text inline-block">TAPE</h3>
+                    <p class="text-white/40 text-sm leading-relaxed max-w-xs">Association of Production
+                        Engineers, Madras Institute of Technology, Anna University.</p>
+                </div>
+                <div>
+                    <h4 class="text-xs font-semibold tracking-[0.2em] uppercase text-white/50 mb-4">Quick Links</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="footer-link text-white/60 hover:text-brand-orange">Home</a></li>
+                        <li><a href="events.html" class="footer-link text-white/60 hover:text-brand-orange">Events</a>
+                        </li>
+                        <li><a href="workshop.html"
+                                class="footer-link text-white/60 hover:text-brand-orange">Workshops</a></li>
+                        <li><a href="contacts.html"
+                                class="footer-link text-white/60 hover:text-brand-orange">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-semibold tracking-[0.2em] uppercase text-white/50 mb-4">Connect</h4>
+                    <div class="flex gap-3">
+                        <a href="https://www.instagram.com/tape__mit/" target="_blank"
+                            class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brand-red/20 hover:border-brand-red/40 transition-all duration-300">
+                            <svg class="w-4 h-4 text-white/60" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C14.717 2 15.056 2.01 16.122 2.06C17.187 2.11 17.912 2.277 18.55 2.525C19.21 2.779 19.766 3.123 20.322 3.678C20.8305 4.1779 21.224 4.78259 21.475 5.45C21.722 6.087 21.89 6.813 21.94 7.878C21.987 8.944 22 9.283 22 12C22 14.717 21.99 15.056 21.94 16.122C21.89 17.187 21.722 17.912 21.475 18.55C21.2247 19.2178 20.8311 19.8226 20.322 20.322C19.822 20.8303 19.2173 21.2238 18.55 21.475C17.913 21.722 17.187 21.89 16.122 21.94C15.056 21.987 14.717 22 12 22C9.283 22 8.944 21.99 7.878 21.94C6.813 21.89 6.088 21.722 5.45 21.475C4.78233 21.2245 4.17753 20.8309 3.678 20.322C3.16941 19.8222 2.77593 19.2175 2.525 18.55C2.277 17.913 2.11 17.187 2.06 16.122C2.013 15.056 2 14.717 2 12C2 9.283 2.01 8.944 2.06 7.878C2.11 6.812 2.277 6.088 2.525 5.45C2.77524 4.78218 3.1688 4.17732 3.678 3.678C4.17767 3.16923 4.78243 2.77573 5.45 2.525C6.088 2.277 6.812 2.11 7.878 2.06C8.944 2.013 9.283 2 12 2ZM12 7C10.6739 7 9.40215 7.52678 8.46447 8.46447C7.52678 9.40215 7 10.6739 7 12C7 13.3261 7.52678 14.5979 8.46447 15.5355C9.40215 16.4732 10.6739 17 12 17C13.3261 17 14.5979 16.4732 15.5355 15.5355C16.4732 14.5979 17 13.3261 17 12C17 10.6739 16.4732 9.40215 15.5355 8.46447C14.5979 7.52678 13.3261 7 12 7ZM18.5 6.75C18.5 6.41848 18.3683 6.10054 18.1339 5.86612C17.8995 5.6317 17.5815 5.5 17.25 5.5C16.9185 5.5 16.6005 5.6317 16.3661 5.86612C16.1317 6.10054 16 6.41848 16 6.75C16 7.08152 16.1317 7.39946 16.3661 7.63388C16.6005 7.8683 16.9185 8 17.25 8C17.5815 8 17.8995 7.8683 18.1339 7.63388C18.3683 7.39946 18.5 7.08152 18.5 6.75ZM12 9C12.7956 9 13.5587 9.31607 14.1213 9.87868C14.6839 10.4413 15 11.2044 15 12C15 12.7956 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7956 15 12 15C11.2044 15 10.4413 14.6839 9.87868 14.1213C9.31607 13.5587 9 12.7956 9 12C9 11.2044 9.31607 10.4413 9.87868 9.87868C10.4413 9.31607 11.2044 9 12 9Z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/company/the-association-of-production-engineers/"
+                            target="_blank"
+                            class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/40 transition-all duration-300">
+                            <svg class="w-4 h-4 text-white/60" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+                            </svg>
+                        </a>
+                        <a href="mailto:tapemit1977@gmail.com" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/40 transition-all duration-300" aria-label="Send email">
+                            <svg class="w-4 h-4 text-white/60" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4a2 2 0 0 0-2 2v.01l10 6 10-6V6a2 2 0 0 0-2-2zm0 4.24-8.94 5.36a2 2 0 0 1-2.12 0L0 8.24V18a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V8.24z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/5 mt-12 pt-8 text-center">
+                <p class="text-white/25 text-xs tracking-wide">&copy; 2026 Association of Production
+                    Engineers. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══════════ SCRIPTS ═══════════ -->
+    <script>
+        // Mobile menu
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        menuToggle.addEventListener('click', () => {
+            const isOpen = !mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.setAttribute('d', isOpen ? 'M4 6h16M4 12h16M4 18h16' : 'M6 18L18 6M6 6l12 12');
+        });
+
+        // Navbar hide/show
+        let lastScrollY = 0;
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            const cur = window.scrollY;
+            if (cur > lastScrollY && cur > 80) navbar.classList.add('nav-hidden');
+            else navbar.classList.remove('nav-hidden');
+            lastScrollY = cur;
+        });
+
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Rules modals
+        function showRules(id) { document.getElementById(id).classList.add('active'); }
+        function hideRules(id) { document.getElementById(id).classList.remove('active'); }
+        document.querySelectorAll('.overlay').forEach(o => {
+            o.addEventListener('click', (e) => { if (e.target === o) o.classList.remove('active'); });
+        });
+    </script>
+
+</body>
+
+</html>

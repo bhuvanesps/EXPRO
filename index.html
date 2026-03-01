@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAPE - THE ASSOCIATION OF PRODUCTION ENGINEERS</title>
+    <meta name="description"
+        content="TAPE — Student-driven Production Engineering association at AU-MIT. Explore EXPRO, our national-level technical symposium.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Montserrat', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            red: '#ff0000',
+                            'red-dark': '#cc0000',
+                            orange: '#ff914d',
+                            'orange-light': '#ffb380',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ── Base ── */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #050505;
+            overflow-x: hidden;
+        }
+
+        /* ── Countdown Timer (Hero Section) ── */
+        .countdown-number {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.75rem;
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 0.625rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 640px) {
+            .countdown-number {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* ── Animated gradient background ── */
+        .hero-bg {
+            position: relative;
+            background: linear-gradient(135deg, #050505 0%, #0d0000 40%, #050505 100%);
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255, 0, 0, 0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 50% at 80% 60%, rgba(255, 145, 77, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* ── Gradient text ── */
+        .gradient-text {
+            background: linear-gradient(135deg, #ff0000 0%, #ff914d 50%, #ff0000 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes textShimmer {
+
+            0%,
+            100% {
+                background-position: 0% center;
+            }
+
+            50% {
+                background-position: 200% center;
+            }
+        }
+
+        /* ── Scroll animations ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Glow line ── */
+        .glow-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff0000, #ff914d, transparent);
+            opacity: 0.6;
+        }
+
+        /* ── Stat card ── */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 0, 0, 0.06);
+            border-color: rgba(255, 0, 0, 0.2);
+            transform: translateY(-4px);
+        }
+
+        /* ── Glass card ── */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(16px);
+        }
+
+        /* ── Navbar hide/show ── */
+        .nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        /* ── Scroll indicator ── */
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
+        .scroll-indicator {
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        /* ── Button glow ── */
+        .btn-primary {
+            position: relative;
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 24px rgba(255, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-primary:hover::after {
+            opacity: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(255, 145, 77, 0.5);
+            color: #ff914d;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 145, 77, 0.1);
+            border-color: #ff914d;
+            transform: translateY(-2px);
+        }
+
+        /* ── Separator dot ── */
+        .dot-sep::before {
+            content: '·';
+            margin: 0 0.5rem;
+            opacity: 0.4;
+        }
+
+        /* ── Footer link hover ── */
+        .footer-link {
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 0;
+            height: 1px;
+            background: #ff914d;
+            transition: width 0.3s ease;
+        }
+
+        .footer-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body class="text-white antialiased">
+
+    <!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+    <nav id="navbar"
+        class="fixed top-0 left-0 w-full z-50 transition-transform duration-300 bg-black/70 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="images/mit_logo.png" alt="MIT Logo" class="h-9 lg:h-12 w-auto bg-white p-1 rounded-md">
+                    <span
+                        class="hidden sm:block font-display font-bold text-sm lg:text-base tracking-wide gradient-text">TAPE</span>
+                </a>
+
+                <!-- Desktop Links -->
+                <ul class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
+                    <li><a href="index.html"
+                            class="text-brand-orange hover:text-brand-orange transition-colors">Home</a></li>
+                    <li><a href="events.html" class="text-white/70 hover:text-white transition-colors">Events</a></li>
+                    <li><a href="workshop.html" class="text-white/70 hover:text-white transition-colors">Workshops</a>
+                    </li>
+                    <li><a href="contacts.html" class="text-white/70 hover:text-white transition-colors">Contact</a>
+                    </li>
+                </ul>
+
+                <!-- Mobile Toggle -->
+                <button id="menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-white/5 transition-colors"
+                    aria-label="Toggle menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-white/5">
+            <div class="px-6 py-6 space-y-4 bg-black/90 backdrop-blur-xl">
+                <a href="index.html" class="block text-brand-orange font-medium py-2 border-b border-white/5">Home</a>
+                <a href="events.html"
+                    class="block text-white/70 hover:text-white font-medium py-2 border-b border-white/5">Events</a>
+                <a href="workshop.html"
+                    class="block text-white/70 hover:text-white font-medium py-2 border-b border-white/5">Workshops</a>
+                <a href="contacts.html" class="block text-white/70 hover:text-white font-medium py-2">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════ HERO ═══════════════════════ -->
+    <section class="hero-bg min-h-screen flex items-center justify-center relative">
+        <div class="max-w-5xl mx-auto px-6 text-center pt-20">
+
+            <!-- Countdown Timer -->
+            <div class="mb-8">
+                <div
+                    class="inline-flex flex-col items-center gap-3 px-6 py-4 rounded-2xl border border-brand-red/30 bg-gradient-to-br from-brand-red/10 to-brand-orange/5 backdrop-blur-sm">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand-red animate-pulse"></span>
+                        <span class="text-white/80 font-semibold text-xs tracking-wider uppercase">EXPRO 2026 Starts
+                            In</span>
+                    </div>
+                    <div class="flex items-center gap-3 sm:gap-4">
+                        <div class="text-center">
+                            <div class="countdown-number text-brand-red" id="days">00</div>
+                            <div class="countdown-label text-white/60">Days</div>
+                        </div>
+                        <div class="text-brand-orange text-xl font-bold">:</div>
+                        <div class="text-center">
+                            <div class="countdown-number text-brand-red" id="hours">00</div>
+                            <div class="countdown-label text-white/60">Hours</div>
+                        </div>
+                        <div class="text-brand-orange text-xl font-bold">:</div>
+                        <div class="text-center">
+                            <div class="countdown-number text-brand-red" id="minutes">00</div>
+                            <div class="countdown-label text-white/60">Minutes</div>
+                        </div>
+                        <div class="text-brand-orange text-xl font-bold">:</div>
+                        <div class="text-center">
+                            <div class="countdown-number text-brand-red" id="seconds">00</div>
+                            <div class="countdown-label text-white/60">Seconds</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Small label -->
+            <div
+                class="inline-flex items-center gap-2 mb-8 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs font-medium tracking-widest uppercase text-white/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse"></span>
+                MIT · Department of Production Technology
+            </div>
+
+            <!-- Heading -->
+            <h1
+                class="font-display font-900 text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight mb-6">
+                The Association of<br>
+                <span class="gradient-text">Production</span><br>
+                Engineers
+            </h1>
+
+            <!-- Subheading -->
+            <p class="text-base sm:text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed mb-10">
+                Igniting curiosity and steering young minds toward groundbreaking technologies and unconventional ideas.
+            </p>
+
+            <!-- CTAs -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="events.html"
+                    class="btn-primary text-white font-semibold px-8 py-3.5 rounded-xl text-sm tracking-wide">
+                    Explore Our Events
+                </a>
+                <a href="workshop.html" class="btn-outline font-semibold px-8 py-3.5 rounded-xl text-sm tracking-wide">
+                    View Workshops
+                </a>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 scroll-indicator">
+            <svg class="w-5 h-5 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ ABOUT ═══════════════════════ -->
+    <section class="py-24 lg:py-32 relative">
+        <div class="glow-line w-full mb-24"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+            <!-- Section label -->
+            <div class="text-center mb-16">
+                <p class="text-xs font-semibold tracking-[0.3em] uppercase text-brand-orange mb-3">Who We Are</p>
+                <h2 class="font-display font-800 text-3xl sm:text-4xl lg:text-5xl tracking-tight">About TAPE</h2>
+            </div>
+
+            <!-- Content grid -->
+            <div class="grid lg:grid-cols-5 gap-12 lg:gap-16 items-center">
+
+                <!-- Logo -->
+                <div class="lg:col-span-2 flex justify-center">
+                    <div class="relative group">
+                        <div
+                            class="absolute -inset-4 bg-gradient-to-br from-brand-red/20 to-brand-orange/10 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        </div>
+                        <img src="images/tape-logo.png" alt="TAPE Logo"
+                            class="relative w-48 sm:w-56 lg:w-64 rounded-2xl shadow-2xl shadow-black/50">
+                    </div>
+                </div>
+
+                <!-- Text -->
+                <div class="lg:col-span-3 space-y-6">
+                    <p class="text-white/60 text-base sm:text-lg leading-relaxed">
+                        <span class="text-white font-medium"> The Association of Production
+                            Engineers</span> (TAPE) is a
+                        student-driven force within the Society of Production at AU-MIT. We unite
+                        production engineering enthusiasts with a bold vision.
+                    </p>
+                    <p class="text-white/60 text-base sm:text-lg leading-relaxed">
+                        Our mission is to ignite curiosity and steer young minds toward groundbreaking technologies and
+                        unconventional ideas. We thrive on pushing boundaries, dreaming beyond the ordinary, and
+                        crafting a future where innovation knows no limits.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ EXPRO SHOWCASE ═══════════════════════ -->
+    <section class="py-24 lg:py-32 relative">
+        <div class="glow-line w-full mb-24"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+            <!-- Section label -->
+            <div class="text-center mb-16">
+                <p class="text-xs font-semibold tracking-[0.3em] uppercase text-brand-orange mb-3">Our Flagship Event
+                </p>
+                <h2 class="font-display font-800 text-3xl sm:text-4xl lg:text-5xl tracking-tight">
+                    Introducing <span class="gradient-text">EXPRO</span>
+                </h2>
+                <p class="text-white/40 mt-4 text-base sm:text-lg max-w-xl mx-auto">
+                    National Level Technical Symposium — March 7th, 2026
+                </p>
+            </div>
+
+            <!-- EXPRO Card -->
+            <div class="glass rounded-3xl overflow-hidden max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-2 items-center">
+
+                    <!-- Image -->
+                    <div class="overflow-hidden bg-black/30" style="min-height: 280px;">
+                        <img src="images/expro-logo.png" alt="EXPRO '26" class="w-full h-full object-cover"
+                            style="min-height: 280px;">
+                    </div>
+
+                    <!-- Details -->
+                    <div class="p-8 md:p-12 space-y-8">
+                        <p class="text-white/50 leading-relaxed text-sm sm:text-base">
+                            EXPRO, forged by AU-MIT's Production Department, crashes into action with
+                            a surge of high-octane tech challenges and workshops. Hosted by TAPE, this annual event is
+                            where
+                            sweat, ingenuity, and a bit of chaos fuel the next big breakthrough.
+                        </p>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="stat-card rounded-xl p-4 text-center">
+                                <p class="font-display font-800 text-2xl sm:text-3xl text-brand-red">6</p>
+                                <p
+                                    class="text-[11px] sm:text-xs text-white/40 mt-1 font-medium tracking-wide uppercase">
+                                    Technical</p>
+                            </div>
+                            <div class="stat-card rounded-xl p-4 text-center">
+                                <p class="font-display font-800 text-2xl sm:text-3xl text-brand-orange">6</p>
+                                <p
+                                    class="text-[11px] sm:text-xs text-white/40 mt-1 font-medium tracking-wide uppercase">
+                                    Non-Tech</p>
+                            </div>
+                            <div class="stat-card rounded-xl p-4 text-center">
+                                <p class="font-display font-800 text-2xl sm:text-3xl text-white">2</p>
+                                <p
+                                    class="text-[11px] sm:text-xs text-white/40 mt-1 font-medium tracking-wide uppercase">
+                                    Workshops</p>
+                            </div>
+                        </div>
+
+                        <!-- CTAs -->
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <a href="events.html"
+                                class="btn-primary text-white font-semibold px-6 py-3 rounded-xl text-sm text-center flex-1">
+                                Register for Events
+                            </a>
+                            <a href="workshop.html"
+                                class="btn-outline font-semibold px-6 py-3 rounded-xl text-sm text-center flex-1">
+                                View Workshops
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+    <footer class="border-t border-white/5 bg-black/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-12">
+
+                <!-- Brand -->
+                <div>
+                    <h3 class="font-display font-bold text-lg mb-3 gradient-text inline-block">TAPE</h3>
+                    <p class="text-white/40 text-sm leading-relaxed max-w-xs">
+                        The Association of Production Engineers, Madras Institute of Technology, Anna
+                        University.
+                    </p>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="text-xs font-semibold tracking-[0.2em] uppercase text-white/50 mb-4">Quick Links</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="footer-link text-white/60 hover:text-brand-orange">Home</a>
+                        </li>
+                        <li><a href="events.html" class="footer-link text-white/60 hover:text-brand-orange">Events</a>
+                        </li>
+                        <li><a href="workshop.html"
+                                class="footer-link text-white/60 hover:text-brand-orange">Workshops</a></li>
+                        <li><a href="contacts.html"
+                                class="footer-link text-white/60 hover:text-brand-orange">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social -->
+                <div>
+                    <h4 class="text-xs font-semibold tracking-[0.2em] uppercase text-white/50 mb-4">Connect</h4>
+                    <div class="flex gap-3">
+                        <a href="https://www.instagram.com/tape__mit/" target="_blank"
+                            class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brand-red/20 hover:border-brand-red/40 transition-all duration-300">
+                            <svg class="w-4 h-4 text-white/60" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C14.717 2 15.056 2.01 16.122 2.06C17.187 2.11 17.912 2.277 18.55 2.525C19.21 2.779 19.766 3.123 20.322 3.678C20.8305 4.1779 21.224 4.78259 21.475 5.45C21.722 6.087 21.89 6.813 21.94 7.878C21.987 8.944 22 9.283 22 12C22 14.717 21.99 15.056 21.94 16.122C21.89 17.187 21.722 17.912 21.475 18.55C21.2247 19.2178 20.8311 19.8226 20.322 20.322C19.822 20.8303 19.2173 21.2238 18.55 21.475C17.913 21.722 17.187 21.89 16.122 21.94C15.056 21.987 14.717 22 12 22C9.283 22 8.944 21.99 7.878 21.94C6.813 21.89 6.088 21.722 5.45 21.475C4.78233 21.2245 4.17753 20.8309 3.678 20.322C3.16941 19.8222 2.77593 19.2175 2.525 18.55C2.277 17.913 2.11 17.187 2.06 16.122C2.013 15.056 2 14.717 2 12C2 9.283 2.01 8.944 2.06 7.878C2.11 6.812 2.277 6.088 2.525 5.45C2.77524 4.78218 3.1688 4.17732 3.678 3.678C4.17767 3.16923 4.78243 2.77573 5.45 2.525C6.088 2.277 6.812 2.11 7.878 2.06C8.944 2.013 9.283 2 12 2ZM12 7C10.6739 7 9.40215 7.52678 8.46447 8.46447C7.52678 9.40215 7 10.6739 7 12C7 13.3261 7.52678 14.5979 8.46447 15.5355C9.40215 16.4732 10.6739 17 12 17C13.3261 17 14.5979 16.4732 15.5355 15.5355C16.4732 14.5979 17 13.3261 17 12C17 10.6739 16.4732 9.40215 15.5355 8.46447C14.5979 7.52678 13.3261 7 12 7ZM18.5 6.75C18.5 6.41848 18.3683 6.10054 18.1339 5.86612C17.8995 5.6317 17.5815 5.5 17.25 5.5C16.9185 5.5 16.6005 5.6317 16.3661 5.86612C16.1317 6.10054 16 6.41848 16 6.75C16 7.08152 16.1317 7.39946 16.3661 7.63388C16.6005 7.8683 16.9185 8 17.25 8C17.5815 8 17.8995 7.8683 18.1339 7.63388C18.3683 7.39946 18.5 7.08152 18.5 6.75ZM12 9C12.7956 9 13.5587 9.31607 14.1213 9.87868C14.6839 10.4413 15 11.2044 15 12C15 12.7956 14.6839 13.5587 14.1213 14.1213C13.5587 14.6839 12.7956 15 12 15C11.2044 15 10.4413 14.6839 9.87868 14.1213C9.31607 13.5587 9 12.7956 9 12C9 11.2044 9.31607 10.4413 9.87868 9.87868C10.4413 9.31607 11.2044 9 12 9Z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/company/the-association-of-production-engineers/"
+                            target="_blank"
+                            class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/40 transition-all duration-300">
+                            <svg class="w-4 h-4 text-white/60" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+                            </svg>
+                        </a>
+                        <a href="mailto:tapemit1977@gmail.com"
+                            class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/40 transition-all duration-300"
+                            aria-label="Send email">
+
+                            <!-- Email (envelope) icon -->
+                            <svg class="w-4 h-4 text-white/60" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M20 4H4a2 2 0 0 0-2 2v.01l10 6 10-6V6a2 2 0 0 0-2-2zm0 4.24-8.94 5.36a2 2 0 0 1-2.12 0L0 8.24V18a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V8.24z" />
+                            </svg>
+
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom bar -->
+            <div class="border-t border-white/5 mt-12 pt-8 text-center">
+                <p class="text-white/25 text-xs tracking-wide">
+                    &copy; 2026 The Association of Production Engineers. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
+    <script>
+        // ── Countdown Timer ──
+        const countdownDate = new Date('March 7, 2026 09:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                const countdownContainer = document.querySelector('.reveal.mb-8');
+                if (countdownContainer) {
+                    countdownContainer.innerHTML =
+                        '<div class="inline-flex items-center gap-2 px-6 py-4 rounded-2xl border border-brand-red/50 bg-gradient-to-br from-brand-red/20 to-brand-orange/10 backdrop-blur-sm text-white font-bold text-lg">🎉 EXPRO 2026 IS LIVE! 🎉</div>';
+                }
+            }
+        }
+
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+
+        // ── Mobile menu toggle ──
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        menuToggle.addEventListener('click', () => {
+            const isOpen = !mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.setAttribute('d', isOpen
+                ? 'M4 6h16M4 12h16M4 18h16'
+                : 'M6 18L18 6M6 6l12 12'
+            );
+        });
+
+        // ── Navbar hide/show on scroll ──
+        let lastScrollY = 0;
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 80) {
+                navbar.classList.add('nav-hidden');
+            } else {
+                navbar.classList.remove('nav-hidden');
+            }
+            lastScrollY = currentScrollY;
+        });
+
+        // ── Scroll reveal ──
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+            document.querySelectorAll('.reveal').forEach(el => {
+                observer.observe(el);
+                // Fallback: If element is already in viewport on load, make it visible immediately
+                const rect = el.getBoundingClientRect();
+                if (rect.top <= (window.innerHeight || document.documentElement.clientHeight)) {
+                    el.classList.add('visible');
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
